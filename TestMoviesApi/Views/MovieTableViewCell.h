@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *title;
 @property (weak, nonatomic) IBOutlet UILabel *overview;
 @property (strong, nonatomic) Movie *movie;
+@property (weak, nonatomic) IBOutlet UIWebView *movieWebView;
 
 - (void)setupCellForMovie:(Movie *)movie;
 - (void)setupCell;

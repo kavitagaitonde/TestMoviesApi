@@ -13,6 +13,7 @@
 - (instancetype)initWithDictionary:(NSDictionary*)dictionary {
     self = [super init];
     if (self) {
+        _mid = [[dictionary objectForKey:@"id"] stringValue];
         _title = [dictionary objectForKey:@"title"];
         _overview = [dictionary objectForKey:@"overview"];
         _releaseDateString = [dictionary objectForKey:@"release_date"];
@@ -27,24 +28,27 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super init];
     if (self) {
+        _mid = [aDecoder decodeObjectForKey:@"mid"];
         _title = [aDecoder decodeObjectForKey:@"title"];
         _overview = [aDecoder decodeObjectForKey:@"overview"];
         _releaseDateString = [aDecoder decodeObjectForKey:@"releaseDateString"];
         _posterPath = [aDecoder decodeObjectForKey:@"posterPath"];
         _averageVote = [aDecoder decodeObjectForKey:@"averageVote"];
         _voteCount = [[aDecoder decodeObjectForKey:@"voteCount"] intValue];
+        _videoId = [aDecoder decodeObjectForKey:@"videoId"];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.title forKey:@"mid"];
     [aCoder encodeObject:self.title forKey:@"title"];
     [aCoder encodeObject:self.title forKey:@"overview"];
     [aCoder encodeObject:self.releaseDateString forKey:@"releaseDateString"];
     [aCoder encodeObject:self.posterPath forKey:@"posterPath"];
     [aCoder encodeObject:self.averageVote forKey:@"averageVote"];
     [aCoder encodeObject:@(self.voteCount) forKey:@"voteCount"];
-    
+    [aCoder encodeObject:self.videoId forKey:@"videoId"];
 }
 
 #pragma NSCopying

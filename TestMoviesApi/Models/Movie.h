@@ -10,11 +10,13 @@
 
 @interface Movie : NSObject <NSCoding, NSCopying>
 
+@property (nonatomic, copy, readonly) NSString *mid;
 @property (nonatomic, copy, readonly) NSString *title;
 @property (nonatomic, copy, readonly) NSString *overview;
 @property (nonatomic, copy, readonly) NSString *releaseDateString;
 @property (nonatomic, copy, readonly) NSNumber *averageVote;
 @property (nonatomic, copy, readonly) NSString *posterPath;
+@property (nonatomic, copy) NSString *videoId;
 @property (nonatomic, assign, readonly) NSInteger voteCount;
 
 - (instancetype)initWithDictionary:(NSDictionary*)dictionary;

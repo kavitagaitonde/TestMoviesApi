@@ -16,6 +16,8 @@ NSString* const largeImageBaseUrl = @"http://image.tmdb.org/t/p/w300";
 
 @interface MoviesManager()
 
+@property(strong, nonatomic) NSString* moviesBaseUrl ;
+@property(strong, nonatomic) NSString* apikey ;
 @property(strong, nonatomic) NSString* smallImageBaseUrl ;
 @property(strong, nonatomic) NSString* largeImageBaseUrl ;
 @property(strong, nonatomic) NSString* nowPlayingUrl;
@@ -33,6 +35,8 @@ NSString* const largeImageBaseUrl = @"http://image.tmdb.org/t/p/w300";
             NSDictionary* configDict = [NSDictionary dictionaryWithContentsOfFile:bundlePath];
             if (configDict) {
                 sharedInstance = [[MoviesManager alloc] init];
+                sharedInstance.moviesBaseUrl = [configDict objectForKey:@"moviesBaseUrl"];
+                sharedInstance.apikey = [configDict objectForKey:@"apikey"];
                 sharedInstance.nowPlayingUrl = [configDict objectForKey:@"nowPlayingUrl"];
                 sharedInstance.smallImageBaseUrl = [configDict objectForKey:@"smallImageBaseUrl"];
                 sharedInstance.largeImageBaseUrl = [configDict objectForKey:@"largeImageBaseUrl"];
@@ -59,9 +63,36 @@ NSString* const largeImageBaseUrl = @"http://image.tmdb.org/t/p/w300";
             NSMutableArray *array = [NSMutableArray array];
             for (NSDictionary *movie in [json objectForKey:@"results"]) {
                 Movie *m = [[Movie alloc] initWithDictionary:movie];
+                __weak Movie *weakMovie = m;
+                [self getVideoInfoFor:m.mid completionBlock:^(NSError *error, NSDictionary *result) {
+                    if (result) {
+                        weakMovie.videoId = [result objectForKey:@"key"];
+                    }
+                }];
                 [array addObject:m];
             }
             completionBlock(nil, array);
+        }
+    }];
+    [task resume];
+}
+
+- (void)getVideoInfoFor:(NSString *)movieId completionBlock:(void (^)(NSError *error, NSDictionary *result))completionBlock {
+    NSString *videoUrl = [NSString stringWithFormat:@"%@%@/videos?language=en-US&api_key=%@", self.moviesBaseUrl, movieId, self.apikey];
+    NSURL *url = [NSURL URLWithString:videoUrl];
+    NSURLSessionTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (error) {
+            completionBlock(error, nil);
+        } else {
+            NSError *e;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&e];
+            NSLog(@"video json: %@", json);
+            NSArray *array = [json objectForKey:@"results"];
+            NSDictionary *movie = nil;
+            if ([array count] > 0) {
+                movie = [[json objectForKey:@"results"] objectAtIndex:0];
+            }
+            completionBlock(nil, movie);
         }
     }];
     [task resume];

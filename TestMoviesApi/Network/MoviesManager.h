@@ -14,4 +14,5 @@
 - (void)getNowPlayingMovies:(void (^)(NSError *error, NSArray *results))completionBlock;
 - (void)downloadImageForPath:(NSString *)path completionBlock:(void (^)(NSError *error,  NSData *data))completionBlock;
 - (void)downloadLargeImageForPath:(NSString *)path completionBlock:(void (^)(NSError *error, NSData *data))completionBlock;
+- (void)getVideoInfoFor:(NSString *)movieId completionBlock:(void (^)(NSError *error, NSDictionary *result))completionBlock;
 @end

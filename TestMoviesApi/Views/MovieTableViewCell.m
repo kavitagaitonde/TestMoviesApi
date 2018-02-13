@@ -35,6 +35,21 @@
         }
     }];
     
+    if (_movie.videoId) {
+        NSString *urlString = [NSString stringWithFormat:@"https://www.youtube.com/watch?v=%@", _movie.videoId];
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        [_movieWebView loadRequest:request];
+    }
+    
+    
+    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        [_movieWebView setHidden:NO];
+        [_movieImageView setHidden:YES];
+    } else {
+        [_movieWebView setHidden:YES];
+        [_movieImageView setHidden:NO];
+    }
     /*
      NSString *imageUrl = [NSString stringWithFormat:@"%@%@", self.smallImageBaseUrl, path];
      __weak MovieTableViewCell *weakSelf = self;
